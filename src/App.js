@@ -1,23 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import LoginPage from './LoginPage';
+import RegisterPage from './RegisterPage';
 
-function App() {
+function Cabinet({ user, onLogout }) {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+      <h2>Личный кабинет</h2>
+      <p>Добро пожаловать, {user.login}!</p>
+      <button onClick={onLogout}>Выйти</button>
+    </div>
+  );
+}
+
+function App() {
+  // --- загружаем user/token из localStorage, если есть
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [page, setPage] = useState('login');
+
+  // --- при логине/регистрации сохраняем токен
+  const handleLogin = (data) => {
+    setUser({ login: data.login, token: data.token });
+    localStorage.setItem('user', JSON.stringify({ login: data.login, token: data.token }));
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+    setPage('login');
+  };
+
+  if (user) {
+    return <Cabinet user={user} onLogout={handleLogout} />;
+  }
+
+  if (page === 'register') {
+    return (
+      <div>
+        <RegisterPage onRegister={handleLogin} />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Уже есть аккаунт?{' '}
+          <button onClick={() => setPage('login')}>Войти</button>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <LoginPage onLogin={handleLogin} />
+      <p>
+        Нет аккаунта?{' '}
+        <button onClick={() => setPage('register')}>Зарегистрироваться</button>
+      </p>
     </div>
   );
 }
