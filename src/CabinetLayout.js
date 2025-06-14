@@ -24,7 +24,7 @@ function CabinetLayout({ user, onLogout }) {
         zIndex: 50,
         boxShadow: '0 2px 10px 0 rgba(130,140,180,0.07)'
       }}>
-        <b style={{ fontSize: 23, color: '#22315b', letterSpacing: '.04em' }}>CRM 24Balance</b>
+        <b style={{ fontSize: 23, color: '#22315b', letterSpacing: '.04em' }}>CRM Мои сервисы</b>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           <span style={{
             color: '#607090',
