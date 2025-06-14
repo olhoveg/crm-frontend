@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Profile from './Profile';
+import Deals from './Deals';
 
 function Cabinet({ user, onLogout }) {
   const [tab, setTab] = useState('deals'); // По умолчанию "Сделки"
@@ -30,26 +31,7 @@ function Cabinet({ user, onLogout }) {
         </nav>
         <main style={styles.content}>
           {tab === 'deals' && (
-            <div>
-              <h2 style={styles.title}>Сделки</h2>
-              <ul style={styles.dealsList}>
-                <li style={styles.dealCard}>
-                  <b>Сделка №1</b>
-                  <div>Статус: В работе</div>
-                  <div>Сумма: 12 000 ₽</div>
-                </li>
-                <li style={styles.dealCard}>
-                  <b>Сделка №2</b>
-                  <div>Статус: Завершена</div>
-                  <div>Сумма: 7 500 ₽</div>
-                </li>
-                <li style={styles.dealCard}>
-                  <b>Сделка №3</b>
-                  <div>Статус: Отменена</div>
-                  <div>Сумма: 5 000 ₽</div>
-                </li>
-              </ul>
-            </div>
+            <Deals user={user} />
           )}
           {tab === 'profile' && (
             <Profile user={user} />
