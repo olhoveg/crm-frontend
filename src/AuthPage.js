@@ -6,6 +6,7 @@ function AuthPage({ onAuthSuccess }) {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
+  const allowedRoles = ['specialist', 'admin'];
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -14,17 +15,32 @@ function AuthPage({ onAuthSuccess }) {
         ? 'http://localhost:3001/api/login'
         : 'http://localhost:3001/api/register';
 
+    // Дополнительно отправляем role при регистрации
+    const body =
+      mode === 'login'
+        ? { login, password }
+        : { login, password, role: 'specialist' };
+
     try {
+      console.log('Попытка логина', body);
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login, password }),
+        body: JSON.stringify(body),
       });
       const data = await response.json();
+      console.log('login response', data);
       if (data.success) {
-        setMessage(mode === 'login' ? 'Успешный вход!' : 'Успешная регистрация!');
-        if (mode === 'login' && onAuthSuccess) onAuthSuccess(data);
-        if (mode === 'register') {
+        if (mode === 'login') {
+          // Только если роль не client
+          if (!allowedRoles.includes(data.role)) {
+            setMessage('Доступ только для специалистов и администраторов');
+            return;
+          }
+          setMessage('Успешный вход!');
+          if (onAuthSuccess) onAuthSuccess(data);
+        } else {
+          setMessage('Успешная регистрация!');
           // Automatically switch to login after successful registration
           setTimeout(() => setMode('login'), 1000);
         }
